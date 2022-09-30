@@ -1,0 +1,21 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/graphql": "^5.0.1",
+    "graphql": "^16.6.0"
+  },
+  "scripts": {
+    "codegen": "graphql-codegen --config codegen.yml"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^2.13.1",
+    "@graphql-codegen/introspection": "^2.2.1",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.5",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
+    "typescript": "^4.8.4"
+  }
+}
