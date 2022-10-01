@@ -1,13 +1,17 @@
 import "./App.css";
 import { useDb } from "./db";
+import { Repository } from "../../models/repository";
+import { Deployment } from "../../models/deployment";
+import { db_deployment } from "../../db/deployment";
+import dayjs from "dayjs";
 
 const useRepository = () => {
   const { db } = useDb();
 
   const stmt = db?.prepare("select * from repositories;");
-  const result = [];
+  const result: Repository[] = [];
   while (stmt?.step()) {
-    result.push(stmt.getAsObject());
+    result.push(stmt.getAsObject() as unknown as Repository);
   }
 
   return result;
@@ -17,9 +21,9 @@ const useDeployment = () => {
   const { db } = useDb();
 
   const stmt = db?.prepare("select * from deployments;");
-  const result = [];
+  const result: Deployment[] = [];
   while (stmt?.step()) {
-    result.push(stmt.getAsObject());
+    result.push(db_deployment.deserialize(stmt.getAsObject()));
   }
 
   return result;
@@ -41,7 +45,10 @@ function App() {
       </div>
       <div>
         {deployments?.map((d, i) => (
-          <div key={i}>{d.url}</div>
+          <div key={i}>
+            <a href={d.url}>{d.hash}</a>
+            <div>{dayjs.unix(d.createdAt).format("YYYY-MM-DD HH:mm:ss")}</div>
+          </div>
         ))}
       </div>
     </div>

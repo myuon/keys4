@@ -1,5 +1,5 @@
 import * as sqlite3 from "sqlite3";
-import { Repository } from "../../models/repository";
+import { Repository } from "../../../../models/repository";
 
 const query = {
   createTable: `

@@ -1,5 +1,6 @@
 import * as sqlite3 from "sqlite3";
-import { Pr } from "../../models/pr";
+import { Pr } from "../../../../models/pr";
+import { db_pr } from "../../../../db/pr";
 
 const query = {
   createTable: `
@@ -22,14 +23,7 @@ const createTableIfNotExists = (db: sqlite3.Database) => {
   db.run(query.createTable);
 };
 const save = (db: sqlite3.Database, pr: Pr) => {
-  db.run(query.replace, [
-    pr.id,
-    pr.url,
-    pr.title,
-    pr.mergedAt,
-    pr.mergeCommitHash,
-    pr.author,
-  ]);
+  db.run(query.replace, db_pr.serialize(pr));
 };
 
 export const newPrRepository = (db: sqlite3.Database) => {

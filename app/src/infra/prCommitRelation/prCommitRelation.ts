@@ -1,5 +1,5 @@
 import * as sqlite3 from "sqlite3";
-import { PrCommitRelation } from "../../models/prCommitRelation";
+import { PrCommitRelation } from "../../../../models/prCommitRelation";
 
 const query = {
   createTable: `

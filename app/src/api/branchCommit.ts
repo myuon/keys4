@@ -5,7 +5,7 @@ import {
 } from "../generated/client";
 import { graphql } from "./graphql";
 import dayjs from "dayjs";
-import { Deployment } from "../models/deployment";
+import { Deployment } from "../../../models/deployment";
 
 export const requestCommitsOnBranch = async (
   owner: string,

@@ -3,9 +3,9 @@ import {
   FetchPrQuery,
   FetchPrQueryVariables,
 } from "../generated/client";
-import { Commit } from "../models/commit";
-import { Pr } from "../models/pr";
-import { PrCommitRelation } from "../models/prCommitRelation";
+import { Commit } from "../../../models/commit";
+import { Pr } from "../../../models/pr";
+import { PrCommitRelation } from "../../../models/prCommitRelation";
 import { graphql } from "./graphql";
 import dayjs from "dayjs";
 

@@ -1,5 +1,6 @@
 import * as sqlite3 from "sqlite3";
-import { Commit } from "../../models/commit";
+import { Commit } from "../../../../models/commit";
+import { db_commit } from "../../../../db/commit";
 
 const query = {
   createTable: `
@@ -22,14 +23,7 @@ const createTableIfNotExists = (db: sqlite3.Database) => {
   db.run(query.createTable);
 };
 const save = (db: sqlite3.Database, commmit: Commit) => {
-  db.run(query.replace, [
-    commmit.hash,
-    commmit.author,
-    commmit.url,
-    commmit.createdAt,
-    commmit.summary,
-    commmit.repositoryName,
-  ]);
+  db.run(query.replace, db_commit.serialize(commmit));
 };
 
 export const newCommitRepostiroy = (db: sqlite3.Database) => {

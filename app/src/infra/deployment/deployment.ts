@@ -1,5 +1,6 @@
 import * as sqlite3 from "sqlite3";
-import { Deployment } from "../../models/deployment";
+import { Deployment } from "../../../../models/deployment";
+import { db_deployment } from "../../../../db/deployment";
 
 const query = {
   createTable: `
@@ -20,12 +21,7 @@ const createTableIfNotExists = (db: sqlite3.Database) => {
   db.run(query.createTable);
 };
 const save = (db: sqlite3.Database, deployment: Deployment) => {
-  db.run(query.replace, [
-    deployment.hash,
-    deployment.url,
-    deployment.createdAt,
-    deployment.repositoryName,
-  ]);
+  db.run(query.replace, db_deployment.serialize(deployment));
 };
 
 export const newDeploymentRepository = (db: sqlite3.Database) => {
