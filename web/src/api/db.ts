@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import initSqlJs from "sql.js";
 import useSWR from "swr";
 
@@ -13,11 +12,11 @@ export const useDb = () => {
       console.error("failed to fetch db, ", await resp.text());
       return;
     }
-    return new Uint8Array(await resp.arrayBuffer());
+    return new SQL.Database(new Uint8Array(await resp.arrayBuffer()));
   });
   if (error) {
     console.error("failed to fetch db, ", error);
   }
 
-  return { db: data ? new SQL.Database(data) : undefined };
+  return { db: data };
 };

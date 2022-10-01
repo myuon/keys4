@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { css } from "@emotion/react";
 import { useRepository } from "./api/repository";
 import { useDeployment } from "./api/deployment";
+import { Calendar } from "./components/Calendar";
 
 function App() {
   const { data: repositories } = useRepository();
@@ -24,6 +25,7 @@ function App() {
           </h2>
         ))}
       </div>
+      <Calendar />
       <div>
         {deployments?.map((d, i) => (
           <div key={i}>
