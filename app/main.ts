@@ -6,22 +6,16 @@ import {
 import { graphql } from "./src/graphql";
 import * as sqlite3 from "sqlite3";
 import dayjs from "dayjs";
+import { Deployment } from "./src/models/deployment";
+import { newDeploymentRepository } from "./src/infra/deployment/deployment";
 sqlite3.verbose();
 
 const db = new sqlite3.Database("./db.sqlite3");
+const deploymentRepository = newDeploymentRepository(db);
 
 async function main() {
   try {
-    // create a table if not exists
-    db.run(`
-      CREATE TABLE IF NOT EXISTS deployments
-      (
-        hash VARCHAR(50) PRIMARY KEY,
-        url TEXT,
-        created_at BIGINT,
-        repository_name VARCHAR(100)
-      );
-    `);
+    deploymentRepository.createTableIfNotExists();
 
     const { repository } = await graphql<BranchCommitsQuery>(
       BranchCommitsDocument.loc?.source.body!,
@@ -47,37 +41,16 @@ async function main() {
                   }
                 : undefined;
             })
-            .filter(
-              (
-                node
-              ): node is {
-                hash: string;
-                url: string;
-                createdAt: number;
-                repositoryName: string;
-              } => Boolean(node)
-            );
+            .filter((node): node is Deployment => Boolean(node));
         } else {
           return undefined;
         }
       })
-      .filter(
-        (
-          nodes
-        ): nodes is {
-          hash: string;
-          url: string;
-          createdAt: number;
-          repositoryName: string;
-        }[] => Boolean(nodes)
-      )
+      .filter((nodes): nodes is Deployment[] => Boolean(nodes))
       .flat();
 
     commits?.forEach((commit) => {
-      db.run(
-        "REPLACE INTO deployments (hash, url, created_at, repository_name) VALUES (?, ?, ?, ?)",
-        [commit.hash, commit.url, commit.createdAt, commit.repositoryName]
-      );
+      deploymentRepository.save(commit);
     });
   } catch (err) {
     console.error(err);
