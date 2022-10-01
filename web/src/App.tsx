@@ -4,6 +4,7 @@ import { Repository } from "../../models/repository";
 import { Deployment } from "../../models/deployment";
 import { db_deployment } from "../../db/deployment";
 import dayjs from "dayjs";
+import { css } from "@emotion/react";
 
 const useRepository = () => {
   const { db } = useDb();
@@ -34,7 +35,13 @@ function App() {
   const deployments = useDeployment();
 
   return (
-    <div className="App">
+    <div
+      className="App"
+      css={css`
+        display: grid;
+        gap: 16px;
+      `}
+    >
       <h1>Four Keys</h1>
       <div>
         {repositories?.map((r, i) => (
