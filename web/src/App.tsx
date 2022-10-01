@@ -6,10 +6,13 @@ import { useDeployment } from "./api/deployment";
 import { Calendar, useLast7Days } from "./components/Calendar";
 import { useMemo } from "react";
 import { Deployment } from "../../models/deployment";
+import { usePr } from "./api/pr";
+import { Pr } from "../../models/pr";
 
 function App() {
   const { data: repositories } = useRepository();
   const { data: deployments } = useDeployment();
+  const { data: pr } = usePr();
 
   const deploysByDate = useMemo(
     () =>
@@ -38,6 +41,22 @@ function App() {
         ])
       ),
     [deploysByDate]
+  );
+  const prByDate = useMemo(
+    () =>
+      pr?.reduce((acc, pr) => {
+        if (!pr.mergedAt) {
+          return acc;
+        }
+
+        const date = dayjs.unix(pr.mergedAt).format("YYYY-MM-DD");
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(pr);
+        return acc;
+      }, {} as Record<string, Pr[]>),
+    [pr]
   );
 
   const thisWeek = useLast7Days(dayjs());
@@ -154,6 +173,32 @@ function App() {
         </div>
         <div>
           <h3>PR This Week</h3>
+
+          {thisWeek
+            .map((day) => prByDate?.[day.format("YYYY-MM-DD")])
+            .flatMap((prs) =>
+              prs?.map((pr) => (
+                <div
+                  key={pr.id}
+                  css={css`
+                    display: flex;
+                    gap: 16px;
+                    text-align: left;
+                  `}
+                >
+                  <span
+                    css={css`
+                      font-weight: bold;
+                    `}
+                  >
+                    {dayjs.unix(pr.mergedAt!).format("YYYY-MM-DD")}
+                  </span>
+                  <a href={pr.url}>
+                    {pr.title} by {pr.author}
+                  </a>
+                </div>
+              ))
+            )}
         </div>
       </section>
       <Calendar events={deployEvents} />
