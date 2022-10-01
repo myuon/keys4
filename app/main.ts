@@ -1,11 +1,11 @@
 import * as sqlite3 from "sqlite3";
 import { newDeploymentRepository } from "./src/infra/deployment/deployment";
-import { requestCommitsOnBranch } from "./src/api/branchCommit";
 import { newCommitRepostiroy } from "./src/infra/commit/commit";
 import { newPrRepository } from "./src/infra/pr/pr";
 import { newPrCommitRelationRepository } from "./src/infra/prCommitRelation/prCommitRelation";
 import { requestPr } from "./src/api/pr";
 import { newRepositoryRepository } from "./src/infra/repository/repository";
+import { requestReleasePr } from "./src/api/releasePr";
 sqlite3.verbose();
 
 const db = new sqlite3.Database("./db.sqlite3");
@@ -28,14 +28,14 @@ const syncRepository = async () => {
 const syncDeploy = async () => {
   deploymentRepository.createTableIfNotExists();
 
-  const commits = await requestCommitsOnBranch(
+  const { deploys } = await requestReleasePr(
     process.env.OWNER!,
     process.env.REPOSITORY!,
     process.env.BRANCH!
   );
 
-  commits?.forEach((commit) => {
-    deploymentRepository.save(commit);
+  deploys?.forEach((deploy) => {
+    deploymentRepository.save(deploy);
   });
 };
 

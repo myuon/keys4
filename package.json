@@ -3,5 +3,9 @@
   "workspaces": [
     "web",
     "app"
-  ]
+  ],
+  "scripts": {
+    "app:codegen": "yarn workspace app codegen",
+    "app:start": "yarn workspace app start"
+  }
 }
