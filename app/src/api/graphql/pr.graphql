@@ -4,6 +4,7 @@ query FetchPr($owner: String!, $name: String!) {
       nodes {
         url
         title
+        createdAt
         mergedAt
         mergeCommit {
           oid

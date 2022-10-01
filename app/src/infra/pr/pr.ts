@@ -9,13 +9,14 @@ CREATE TABLE IF NOT EXISTS prs
   id VARCHAR(50) PRIMARY KEY,
   url TEXT,
   title TEXT,
+  created_at BIGINT,
   merged_at BIGINT,
   merge_commit_hash VARCHAR(50),
   author VARCHAR(50)
 );
 `,
   replace: `
-REPLACE INTO prs (id, url, title, merged_at, merge_commit_hash, author) VALUES (?, ?, ?, ?, ?, ?)
+REPLACE INTO prs (id, url, title, created_at, merged_at, merge_commit_hash, author) VALUES (?, ?, ?, ?, ?, ?, ?)
 `,
 };
 

@@ -45,11 +45,7 @@ function App() {
   const prByDate = useMemo(
     () =>
       pr?.reduce((acc, pr) => {
-        if (!pr.mergedAt) {
-          return acc;
-        }
-
-        const date = dayjs.unix(pr.mergedAt).format("YYYY-MM-DD");
+        const date = dayjs.unix(pr.createdAt).format("YYYY-MM-DD");
         if (!acc[date]) {
           acc[date] = [];
         }
@@ -191,11 +187,10 @@ function App() {
                       font-weight: bold;
                     `}
                   >
-                    {dayjs.unix(pr.mergedAt!).format("YYYY-MM-DD")}
+                    {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
                   </span>
-                  <a href={pr.url}>
-                    {pr.title} by {pr.author}
-                  </a>
+                  <span>@{pr.author}</span>
+                  <a href={pr.url}>{pr.title}</a>
                 </div>
               ))
             )}

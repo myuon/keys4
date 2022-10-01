@@ -30,7 +30,8 @@ export const requestPr = async (owner: string, name: string) => {
         id: node.id,
         title: node.title,
         url: node.url,
-        mergedAt: node.mergedAt,
+        createdAt: dayjs(node.createdAt).unix(),
+        mergedAt: node.mergedAt ? dayjs(node.mergedAt).unix() : undefined,
         mergeCommitHash: node.mergeCommit?.oid,
         author:
           node.author?.__typename === "User" ? node.author.login : undefined,
