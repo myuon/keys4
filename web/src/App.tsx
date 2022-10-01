@@ -1,39 +1,49 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 import { useDb } from "./db";
 
-function App() {
-  const [count, setCount] = useState(0);
+const useRepository = () => {
   const { db } = useDb();
-  console.log(db?.exec("select name from sqlite_master where type = 'table';"));
-  const stmt = db?.prepare("select * from deployments;");
+
+  const stmt = db?.prepare("select * from repositories;");
+  const result = [];
   while (stmt?.step()) {
-    console.log(stmt.getAsObject());
+    result.push(stmt.getAsObject());
   }
+
+  return result;
+};
+
+const useDeployment = () => {
+  const { db } = useDb();
+
+  const stmt = db?.prepare("select * from deployments;");
+  const result = [];
+  while (stmt?.step()) {
+    result.push(stmt.getAsObject());
+  }
+
+  return result;
+};
+
+function App() {
+  const repositories = useRepository();
+  const deployments = useDeployment();
 
   return (
     <div className="App">
+      <h1>Four Keys</h1>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        {repositories?.map((r, i) => (
+          <h2 key={i}>
+            {r.owner}/{r.name}
+          </h2>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div>
+        {deployments?.map((d, i) => (
+          <div key={i}>{d.url}</div>
+        ))}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   );
 }

@@ -11,7 +11,10 @@ export const useDb = () => {
     void (async () => {
       if (!file) {
         const resp = await fetch("/db.sqlite3");
-        console.log(resp.ok);
+        if (!resp.ok) {
+          console.error("failed to fetch db, ", await resp.text());
+          return;
+        }
         setFile(new Uint8Array(await resp.arrayBuffer()));
       }
     })();
