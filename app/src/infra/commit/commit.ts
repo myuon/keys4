@@ -9,11 +9,12 @@ CREATE TABLE IF NOT EXISTS commits
   author VARCHAR(50),
   url TEXT,
   created_at BIGINT,
-  summary TEXT
+  summary TEXT,
+  repository_name VARCHAR(100)
 );
 `,
   replace: `
-REPLACE INTO commits (hash, author, url, created_at, summary) VALUES (?, ?, ?, ?, ?)
+REPLACE INTO commits (hash, author, url, created_at, summary, repository_name) VALUES (?, ?, ?, ?, ?, ?)
 `,
 };
 
@@ -27,6 +28,7 @@ const save = (db: sqlite3.Database, commmit: Commit) => {
     commmit.url,
     commmit.createdAt,
     commmit.summary,
+    commmit.repositoryName,
   ]);
 };
 

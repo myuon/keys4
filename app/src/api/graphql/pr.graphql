@@ -1,0 +1,36 @@
+query FetchPr($owner: String!, $name: String!) {
+  repository(name: $name, owner: $owner) {
+    pullRequests(orderBy: {field: CREATED_AT, direction: DESC}, first: 30) {
+      nodes {
+        url
+        title
+        mergedAt
+        mergeCommit {
+          oid
+        }
+        author {
+          __typename
+          ... on User {
+            login
+          }
+        }
+        commits(first: 100) {
+          nodes {
+            commit {
+              oid
+              author {
+                user {
+                  login
+                }
+              }
+              commitUrl
+              committedDate
+              messageHeadline
+            }
+          }
+        }
+        id
+      }
+    }
+  }
+}

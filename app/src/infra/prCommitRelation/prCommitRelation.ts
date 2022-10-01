@@ -22,7 +22,7 @@ const save = (db: sqlite3.Database, relation: PrCommitRelation) => {
   db.run(query.replace, [relation.prId, relation.commitHash]);
 };
 
-export const newCommitRepostiroy = (db: sqlite3.Database) => {
+export const newPrCommitRelationRepository = (db: sqlite3.Database) => {
   return {
     createTableIfNotExists: () => createTableIfNotExists(db),
     save: (relation: PrCommitRelation) => save(db, relation),

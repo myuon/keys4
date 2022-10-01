@@ -4,4 +4,5 @@ export interface Commit {
   url: string;
   createdAt: number;
   summary: string;
+  repositoryName: string;
 }
