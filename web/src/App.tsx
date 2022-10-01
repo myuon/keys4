@@ -1,9 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import "./App.css";
+import { useDb } from "./db";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const { db } = useDb();
+  console.log(db?.exec("select name from sqlite_master where type = 'table';"));
+  const stmt = db?.prepare("select * from deployments;");
+  while (stmt?.step()) {
+    console.log(stmt.getAsObject());
+  }
 
   return (
     <div className="App">
@@ -28,7 +35,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
