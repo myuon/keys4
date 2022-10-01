@@ -6,22 +6,22 @@ sqlite3.verbose();
 const db = new sqlite3.Database("./db.sqlite3");
 const deploymentRepository = newDeploymentRepository(db);
 
-async function main() {
-  try {
-    deploymentRepository.createTableIfNotExists();
+const syncDeploy = async () => {
+  deploymentRepository.createTableIfNotExists();
 
-    const commits = await requestCommitsOnBranch(
-      process.env.OWNER!,
-      process.env.REPOSITORY!,
-      process.env.BRANCH!
-    );
+  const commits = await requestCommitsOnBranch(
+    process.env.OWNER!,
+    process.env.REPOSITORY!,
+    process.env.BRANCH!
+  );
 
-    commits?.forEach((commit) => {
-      deploymentRepository.save(commit);
-    });
-  } catch (err) {
-    console.error(err);
-  }
-}
+  commits?.forEach((commit) => {
+    deploymentRepository.save(commit);
+  });
+};
+
+const main = async () => {
+  await syncDeploy();
+};
 
 main();
