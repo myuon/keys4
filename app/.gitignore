@@ -1,2 +1,3 @@
 src/generated/
 config.ts
+*.sqlite3

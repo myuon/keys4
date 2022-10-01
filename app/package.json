@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@octokit/graphql": "^5.0.1",
+    "dayjs": "^1.11.5",
     "dotenv": "^16.0.3",
-    "graphql": "^16.6.0"
+    "graphql": "^16.6.0",
+    "sqlite3": "^5.1.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.13.1",

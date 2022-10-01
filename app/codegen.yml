@@ -1,4 +1,5 @@
 schema: https://docs.github.com/public/schema.docs.graphql
+documents: "./src/api/graphql/*.graphql"
 generates:
   src/generated/client.ts:
     plugins:
