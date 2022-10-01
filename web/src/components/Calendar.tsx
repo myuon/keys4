@@ -40,7 +40,9 @@ const useCalendarWeeks = (today: dayjs.Dayjs) => {
 
 export const useLast7Days = (today: dayjs.Dayjs) => {
   return useMemo(() => {
-    return range(1, 7).map((i) => today.subtract(i, "day"));
+    return range(1, 7)
+      .reverse()
+      .map((i) => today.subtract(i, "day"));
   }, []);
 };
 

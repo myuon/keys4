@@ -10,6 +10,7 @@ import { Deployment } from "../../models/deployment";
 function App() {
   const { data: repositories } = useRepository();
   const { data: deployments } = useDeployment();
+
   const deploysByDate = useMemo(
     () =>
       deployments?.reduce((acc, deployment) => {
@@ -40,6 +41,16 @@ function App() {
   );
 
   const thisWeek = useLast7Days(dayjs());
+  const deploysThisWeek = useMemo(
+    () =>
+      thisWeek
+        .map((day) => {
+          const date = day.format("YYYY-MM-DD");
+          return deploysByDate?.[date]?.length ?? 0;
+        })
+        .reduce((acc, cur) => acc + cur, 0),
+    [deploysByDate, thisWeek]
+  );
 
   return (
     <div
@@ -57,8 +68,38 @@ function App() {
           </h2>
         ))}
       </div>
-      <section>
+      <section
+        css={css`
+          display: grid;
+          gap: 16px;
+        `}
+      >
         <h2>Deployments</h2>
+
+        <div
+          css={css`
+            display: grid;
+            justify-content: center;
+          `}
+        >
+          {deploysThisWeek > 0 && (
+            <div
+              css={css`
+                width: 100px;
+                height: 100px;
+                background-color: #22c55e;
+                display: grid;
+                place-items: center;
+                border-radius: 50%;
+                color: white;
+                font-size: 20px;
+                font-weight: 500;
+              `}
+            >
+              High
+            </div>
+          )}
+        </div>
 
         <div
           css={css`
@@ -82,6 +123,37 @@ function App() {
               )}
             </div>
           ))}
+        </div>
+
+        <div>
+          <h3>Deploys This Week</h3>
+
+          {thisWeek
+            .map((day) => deploysByDate?.[day.format("YYYY-MM-DD")])
+            .flatMap((deploys) =>
+              deploys?.map((deploy) => (
+                <div
+                  key={deploy.hash}
+                  css={css`
+                    display: flex;
+                    gap: 16px;
+                    text-align: left;
+                  `}
+                >
+                  <span
+                    css={css`
+                      font-weight: bold;
+                    `}
+                  >
+                    {dayjs.unix(deploy.createdAt).format("YYYY-MM-DD")}
+                  </span>
+                  <a href={deploy.url}>{deploy.hash.slice(0, 6)}</a>
+                </div>
+              ))
+            )}
+        </div>
+        <div>
+          <h3>PR This Week</h3>
         </div>
       </section>
       <Calendar events={deployEvents} />

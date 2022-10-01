@@ -1,5 +1,6 @@
 import * as sqlite3 from "sqlite3";
 import { Repository } from "../../../../models/repository";
+import { db_repository } from "../../../../db/repository";
 
 const query = {
   createTable: `
@@ -20,7 +21,7 @@ const createTableIfNotExists = (db: sqlite3.Database) => {
   db.run(query.createTable);
 };
 const save = (db: sqlite3.Database, repo: Repository) => {
-  db.run(query.replace, [repo.owner, repo.name, repo.url]);
+  db.run(query.replace, db_repository.serialize(repo));
 };
 
 export const newRepositoryRepository = (db: sqlite3.Database) => {
