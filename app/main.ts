@@ -18,52 +18,47 @@ const repositoryRepository = newRepositoryRepository(db);
 const syncRepository = async () => {
   repositoryRepository.createTableIfNotExists();
 
-  repositoryRepository.save({
-    owner: process.env.OWNER!,
-    name: process.env.REPOSITORY!,
-    url: `https://github.com/${process.env.OWNER!}/${process.env.REPOSITORY!}`,
+  const { config } = await import("./keys4.config");
+
+  config.projects.forEach((project) => {
+    repositoryRepository.save({
+      owner: project.owner,
+      name: project.name,
+      url: `https://github.com/${project.owner}/${project.name}`,
+    });
   });
+
+  return config;
 };
 
-const syncDeploy = async () => {
-  deploymentRepository.createTableIfNotExists();
-
-  const { deploys } = await requestReleasePr(
-    process.env.OWNER!,
-    process.env.REPOSITORY!,
-    process.env.BRANCH!
-  );
-
-  deploys?.forEach((deploy) => {
-    deploymentRepository.save(deploy);
-  });
-};
-
-const syncPr = async () => {
+const syncPr = async (config: {
+  projects: { owner: string; name: string }[];
+}) => {
   prRepository.createTableIfNotExists();
   prCommitRelationRepository.createTableIfNotExists();
   commitRepository.createTableIfNotExists();
 
-  const { prs, commits, relations } = await requestPr(
-    process.env.OWNER!,
-    process.env.REPOSITORY!
-  );
+  config.projects.forEach(async (project) => {
+    const { prs, commits, relations } = await requestPr(
+      project.owner,
+      project.name
+    );
 
-  prs.forEach((pr) => {
-    prRepository.save(pr);
-  });
-  commits.forEach((commit) => {
-    commitRepository.save(commit);
-  });
-  relations.forEach((relation) => {
-    prCommitRelationRepository.save(relation);
+    prs.forEach((pr) => {
+      prRepository.save(pr);
+    });
+    commits.forEach((commit) => {
+      commitRepository.save(commit);
+    });
+    relations.forEach((relation) => {
+      prCommitRelationRepository.save(relation);
+    });
   });
 };
 
 const main = async () => {
-  await syncRepository();
-  await syncDeploy();
-  await syncPr();
+  const config = await syncRepository();
+  await syncPr(config);
 };
 
 main();

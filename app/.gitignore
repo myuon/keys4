@@ -1,3 +1,4 @@
 src/generated/
 config.ts
 *.sqlite3
+keys4.config.ts
