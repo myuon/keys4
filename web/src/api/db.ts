@@ -1,10 +1,6 @@
 import initSqlJs from "sql.js";
 import useSWR from "swr";
 
-const SQL = await initSqlJs({
-  locateFile: (file: string) => `https://sql.js.org/dist/${file}`,
-});
-
 export const useDb = () => {
   const { data, error } = useSWR("/db.sqlite3", async (url) => {
     console.log("fetching db");
@@ -17,6 +13,12 @@ export const useDb = () => {
       console.error("failed to fetch db, ", await resp.text());
       return;
     }
+
+    console.log("initializing db");
+
+    const SQL = await initSqlJs({
+      locateFile: (file: string) => `https://sql.js.org/dist/${file}`,
+    });
 
     const sql = new SQL.Database(new Uint8Array(await resp.arrayBuffer()));
 
