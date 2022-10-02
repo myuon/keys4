@@ -1,0 +1,32 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "../.eslintrc.json",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["react", "@typescript-eslint", "css-reorder"],
+  "rules": {
+    "react/self-closing-comp": "error",
+    "css-reorder/property-reorder": "error",
+    "react/display-name": "off",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    // cf: https://qiita.com/yuto-ono/items/6642b16f720c9e82fef4
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
+  },
+  "ignorePatterns": [".eslintrc.js"]
+}

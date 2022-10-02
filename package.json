@@ -7,5 +7,14 @@
   "scripts": {
     "app:codegen": "yarn workspace app codegen",
     "app:start": "yarn workspace app start"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-promise": "^6.0.0",
+    "prettier": "^2.7.1"
   }
 }

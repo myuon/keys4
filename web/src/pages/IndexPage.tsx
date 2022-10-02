@@ -60,7 +60,7 @@ export const IndexPage = () => {
           return prByDate?.[date]?.length ?? 0;
         })
         .reduce((acc, cur) => acc + cur, 0) / (repositories?.length ?? 1),
-    [thisWeek, prByDate]
+    [thisWeek, repositories?.length, prByDate]
   );
   const leadTimeForChanges = useMemo(() => {
     const leadTimes = pr
@@ -72,7 +72,7 @@ export const IndexPage = () => {
     }
 
     return median(leadTimes);
-  }, []);
+  }, [pr]);
 
   return (
     <div
@@ -94,21 +94,21 @@ export const IndexPage = () => {
         <div
           css={css`
             display: flex;
-            justify-content: center;
             gap: 32px;
+            justify-content: center;
           `}
         >
           {deploysThisWeek && (
             <div
               css={css`
-                width: 100px;
-                height: 100px;
-                // background-color: #22c55e;
-                background-color: #6366f1;
-                border-radius: 50%;
-                color: white;
                 display: grid;
                 place-items: center;
+                width: 100px;
+                height: 100px;
+                color: white;
+                /* background-color: #22c55e; */
+                background-color: #6366f1;
+                border-radius: 50%;
               `}
             >
               <div
@@ -134,16 +134,16 @@ export const IndexPage = () => {
           {leadTimeForChanges && (
             <div
               css={css`
+                display: grid;
+                place-items: center;
                 width: 100px;
                 height: 100px;
-                // background-color: #22c55e;
+                color: white;
+                /* background-color: #22c55e; */
                 background-color: ${leadTimeForChanges < 1.0
                   ? "#6366f1"
                   : "#22c55e"};
                 border-radius: 50%;
-                color: white;
-                display: grid;
-                place-items: center;
               `}
             >
               <div

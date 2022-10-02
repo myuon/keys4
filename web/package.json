@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "eslint --fix .",
+    "postformat": "prettier --write .",
+    "typecheck": "tsc -p ."
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -23,6 +27,10 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/sql.js": "^1.4.4",
     "@vitejs/plugin-react": "^2.1.0",
+    "eslint-plugin-css-reorder": "^0.5.1",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "typescript": "^4.6.4",
     "vite": "^3.1.0"
   }

@@ -6,4 +6,8 @@ export const routes = createBrowserRouter([
     path: "/",
     element: <IndexPage />,
   },
+  {
+    path: "/users/:userId",
+    element: <div>user</div>,
+  },
 ]);

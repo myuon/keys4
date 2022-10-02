@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import dayjs from "dayjs";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 const range = (start: number, end: number) => {
   const length = end - start + 1;
@@ -14,7 +14,7 @@ const useCalendarWeeks = (today: dayjs.Dayjs) => {
     const dayStartOfMonth = startOfMonth.day();
 
     const firstWeek = [
-      ...range(0, dayStartOfMonth - 1).map((_) => undefined),
+      ...range(0, dayStartOfMonth - 1).map(() => undefined),
       ...range(1, 7 - dayStartOfMonth),
     ];
     const weeks = [firstWeek];
@@ -24,7 +24,7 @@ const useCalendarWeeks = (today: dayjs.Dayjs) => {
       if (date + 6 > endOfMonth.date()) {
         weeks.push([
           ...range(date, endOfMonth.date()),
-          ...range(0, 5 - (endOfMonth.date() - date)).map((_) => undefined),
+          ...range(0, 5 - (endOfMonth.date() - date)).map(() => undefined),
         ]);
       } else {
         weeks.push(range(date, date + 6));
@@ -33,7 +33,7 @@ const useCalendarWeeks = (today: dayjs.Dayjs) => {
     }
 
     return weeks;
-  }, []);
+  }, [today]);
 
   return weeks;
 };
@@ -43,7 +43,7 @@ export const useLast7Days = (today: dayjs.Dayjs) => {
     return range(1, 7)
       .reverse()
       .map((i) => today.subtract(i, "day"));
-  }, []);
+  }, [today]);
 };
 
 export const Calendar = ({
@@ -59,17 +59,18 @@ export const Calendar = ({
       css={css`
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-
-        & > div {
-          border-left: 1px solid #e2e8f0;
-          border-top: 1px solid #e2e8f0;
-        }
         border-right: 1px solid #e2e8f0;
         border-bottom: 1px solid #e2e8f0;
+
+        & > div {
+          border-top: 1px solid #e2e8f0;
+          border-left: 1px solid #e2e8f0;
+        }
       `}
     >
       {[
         <span
+          key="sun"
           css={css`
             color: #dc2626;
           `}
@@ -82,6 +83,7 @@ export const Calendar = ({
         "Thu",
         "Fri",
         <span
+          key="sat"
           css={css`
             color: #2563eb;
           `}
