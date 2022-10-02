@@ -6,7 +6,7 @@ import { db_repository } from "../../../db/repository";
 export const useRepository = () => {
   const { db } = useDb();
 
-  return useSWR("/api/repository", async (url) => {
+  return useSWR(db ? "/api/repository" : null, async (url) => {
     const stmt = db?.prepare("select * from repositories;");
     const result: Repository[] = [];
     while (stmt?.step()) {
