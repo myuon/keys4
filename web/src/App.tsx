@@ -8,7 +8,6 @@ import { useMemo } from "react";
 import { Deployment } from "../../models/deployment";
 import { usePr } from "./api/pr";
 import { Pr } from "../../models/pr";
-import { useReleasePr } from "./api/releasePr";
 
 function App() {
   const { data: repositories } = useRepository();
@@ -21,7 +20,6 @@ function App() {
     end: thisWeek[thisWeek.length - 1].add(1, "day").unix(),
   };
   const { data: pr } = usePr(span);
-  const { data: releasePr } = useReleasePr(span);
 
   const deploysByDate = useMemo(
     () =>
@@ -151,29 +149,6 @@ function App() {
         </div>
 
         <div>
-          <h3>Deploys This Week</h3>
-
-          {releasePr?.map(([pr, deploy]) => (
-            <div
-              key={pr.id}
-              css={css`
-                display: flex;
-                gap: 16px;
-                text-align: left;
-              `}
-            >
-              <span
-                css={css`
-                  font-weight: bold;
-                `}
-              >
-                {dayjs.unix(deploy.createdAt).format("YYYY-MM-DD")}
-              </span>
-              <a href={pr.url}>{pr.title}</a>
-            </div>
-          ))}
-        </div>
-        <div>
           <h3>PR This Week</h3>
 
           <div
@@ -211,19 +186,41 @@ function App() {
                           <div
                             key={pr.id}
                             css={css`
-                              display: flex;
+                              display: grid;
+                              grid-template-columns: 1fr auto;
                               gap: 16px;
-                              text-align: left;
                             `}
                           >
-                            <span
+                            <div
                               css={css`
-                                font-weight: bold;
+                                display: flex;
+                                gap: 16px;
+                                text-align: left;
                               `}
                             >
-                              {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
-                            </span>
-                            <a href={pr.url}>{pr.title}</a>
+                              <span
+                                css={css`
+                                  font-weight: bold;
+                                `}
+                              >
+                                {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
+                              </span>
+                              <a href={pr.url}>{pr.title}</a>
+                            </div>
+                            <div>
+                              {pr.mergedAt && (
+                                <span>
+                                  ✅{" "}
+                                  {dayjs
+                                    .unix(pr.mergedAt)
+                                    .diff(
+                                      dayjs.unix(pr.createdAt),
+                                      "hour"
+                                    )}{" "}
+                                  hrs
+                                </span>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
