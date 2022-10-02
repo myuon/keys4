@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Pr } from "../../../models/pr";
 import { usePr } from "../api/pr";
@@ -58,50 +58,46 @@ export const UserPage = () => {
             <div
               css={css`
                 display: grid;
-                gap: 2px;
+                grid-template-columns: auto 1fr auto;
+                gap: 4px 16px;
               `}
             >
               {userPrs.map((pr) => (
-                <div
-                  key={pr.id}
-                  css={css`
-                    display: grid;
-                    grid-template-columns: 1fr auto;
-                    gap: 16px;
-                  `}
-                >
+                <React.Fragment key={pr.id}>
+                  <span
+                    css={css`
+                      font-weight: bold;
+                    `}
+                  >
+                    {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
+                  </span>
+                  <a href={pr.url}>{pr.title}</a>
                   <div
                     css={css`
                       display: flex;
-                      gap: 16px;
-                      text-align: left;
+                      gap: 8px;
                     `}
                   >
-                    <span
-                      css={css`
-                        font-weight: bold;
-                      `}
-                    >
-                      {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
-                    </span>
-                    <a href={pr.url}>{pr.title}</a>
-                  </div>
-                  <div>
                     {pr.mergedAt ? (
-                      <span>
-                        ✅{" "}
-                        {dayjs
-                          .unix(pr.mergedAt)
-                          .diff(dayjs.unix(pr.createdAt), "hour")}{" "}
-                        hrs
-                      </span>
+                      <>
+                        <span>✅ </span>
+                        <span>
+                          {dayjs
+                            .unix(pr.mergedAt)
+                            .diff(dayjs.unix(pr.createdAt), "hour")}{" "}
+                          hrs
+                        </span>
+                      </>
                     ) : (
-                      <span>
-                        ⏳ {dayjs().diff(dayjs.unix(pr.createdAt), "hour")} hrs
-                      </span>
+                      <>
+                        <span>⏳</span>
+                        <span>
+                          {dayjs().diff(dayjs.unix(pr.createdAt), "hour")} hrs
+                        </span>
+                      </>
                     )}
                   </div>
-                </div>
+                </React.Fragment>
               ))}
             </div>
           </div>
