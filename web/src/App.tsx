@@ -60,7 +60,7 @@ function App() {
           const date = day.format("YYYY-MM-DD");
           return prByDate?.[date]?.length ?? 0;
         })
-        .reduce((acc, cur) => acc + cur, 0),
+        .reduce((acc, cur) => acc + cur, 0) / (repositories?.length ?? 1),
     [thisWeek, prByDate]
   );
   const leadTimeForChanges = useMemo(() => {
@@ -106,7 +106,7 @@ function App() {
             gap: 32px;
           `}
         >
-          {deploysThisWeek / 5 >= 2.5 && (
+          {deploysThisWeek && (
             <div
               css={css`
                 width: 100px;
