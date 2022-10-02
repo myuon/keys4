@@ -1,11 +1,30 @@
 import { css } from "@emotion/react";
 import dayjs from "dayjs";
 import { useMemo } from "react";
+import { Bar } from "react-chartjs-2";
 import { Link } from "react-router-dom";
 import { Pr } from "../../../models/pr";
 import { usePr } from "../api/pr";
 import { useRepository } from "../api/repository";
 import { useLast7Days } from "../components/Calendar";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const median = (arr: number[]) => {
   return arr.sort((a, b) => a - b)[Math.floor(arr.length / 2)];
@@ -196,6 +215,42 @@ export const IndexPage = () => {
         <div>
           <h3>PR This Week</h3>
 
+          {prByAuthor && (
+            <Bar
+              options={{
+                indexAxis: "y" as const,
+                elements: {
+                  bar: {
+                    borderWidth: 2,
+                  },
+                },
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "right" as const,
+                  },
+                  title: {
+                    display: true,
+                    text: "Chart.js Horizontal Bar Chart",
+                  },
+                },
+              }}
+              data={{
+                labels: Object.keys(prByAuthor),
+                datasets: [
+                  {
+                    label: "# PR",
+                    data: Object.keys(prByAuthor).map(
+                      (author) => prByAuthor[author].length
+                    ),
+                    borderColor: "#1d4ed8",
+                    backgroundColor: "#60a5fa",
+                  },
+                ],
+              }}
+            />
+          )}
+
           <div
             css={css`
               display: grid;
@@ -222,63 +277,6 @@ export const IndexPage = () => {
                       >
                         {author} ({prs.length})
                       </Link>
-                      <div
-                        css={css`
-                          display: grid;
-                          gap: 2px;
-                        `}
-                      >
-                        {prs.map((pr) => (
-                          <div
-                            key={pr.id}
-                            css={css`
-                              display: grid;
-                              grid-template-columns: 1fr auto;
-                              gap: 16px;
-                            `}
-                          >
-                            <div
-                              css={css`
-                                display: flex;
-                                gap: 16px;
-                                text-align: left;
-                              `}
-                            >
-                              <span
-                                css={css`
-                                  font-weight: bold;
-                                `}
-                              >
-                                {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
-                              </span>
-                              <a href={pr.url}>{pr.title}</a>
-                            </div>
-                            <div>
-                              {pr.mergedAt ? (
-                                <span>
-                                  ✅{" "}
-                                  {dayjs
-                                    .unix(pr.mergedAt)
-                                    .diff(
-                                      dayjs.unix(pr.createdAt),
-                                      "hour"
-                                    )}{" "}
-                                  hrs
-                                </span>
-                              ) : (
-                                <span>
-                                  ⏳{" "}
-                                  {dayjs().diff(
-                                    dayjs.unix(pr.createdAt),
-                                    "hour"
-                                  )}{" "}
-                                  hrs
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
                     </div>
                   )
               )}
