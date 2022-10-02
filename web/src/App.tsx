@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { Deployment } from "../../models/deployment";
 import { usePr } from "./api/pr";
 import { Pr } from "../../models/pr";
+import { useReleasePr } from "./api/releasePr";
 
 function App() {
   const { data: repositories } = useRepository();
@@ -15,10 +16,12 @@ function App() {
 
   const thisWeek = useLast7Days(dayjs());
 
-  const { data: pr } = usePr({
+  const span = {
     start: thisWeek[0].unix(),
     end: thisWeek[thisWeek.length - 1].add(1, "day").unix(),
-  });
+  };
+  const { data: pr } = usePr(span);
+  const { data: releasePr } = useReleasePr(span);
 
   const deploysByDate = useMemo(
     () =>
@@ -150,29 +153,25 @@ function App() {
         <div>
           <h3>Deploys This Week</h3>
 
-          {thisWeek
-            .map((day) => deploysByDate?.[day.format("YYYY-MM-DD")])
-            .flatMap((deploys) =>
-              deploys?.map((deploy) => (
-                <div
-                  key={deploy.hash}
-                  css={css`
-                    display: flex;
-                    gap: 16px;
-                    text-align: left;
-                  `}
-                >
-                  <span
-                    css={css`
-                      font-weight: bold;
-                    `}
-                  >
-                    {dayjs.unix(deploy.createdAt).format("YYYY-MM-DD")}
-                  </span>
-                  <a href={deploy.url}>{deploy.hash.slice(0, 6)}</a>
-                </div>
-              ))
-            )}
+          {releasePr?.map(([pr, deploy]) => (
+            <div
+              key={pr.id}
+              css={css`
+                display: flex;
+                gap: 16px;
+                text-align: left;
+              `}
+            >
+              <span
+                css={css`
+                  font-weight: bold;
+                `}
+              >
+                {dayjs.unix(deploy.createdAt).format("YYYY-MM-DD")}
+              </span>
+              <a href={pr.url}>{pr.title}</a>
+            </div>
+          ))}
         </div>
         <div>
           <h3>PR This Week</h3>
