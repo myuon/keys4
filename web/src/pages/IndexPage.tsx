@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import dayjs from "dayjs";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { Pr } from "../../../models/pr";
 import { usePr } from "../api/pr";
 import { useRepository } from "../api/repository";
@@ -213,13 +214,14 @@ export const IndexPage = () => {
                         text-align: left;
                       `}
                     >
-                      <span
+                      <Link
+                        to={`/users/${author}`}
                         css={css`
                           font-weight: bold;
                         `}
                       >
                         {author} ({prs.length})
-                      </span>
+                      </Link>
                       <div
                         css={css`
                           display: grid;

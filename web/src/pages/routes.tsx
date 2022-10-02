@@ -1,5 +1,6 @@
 import { IndexPage } from "./IndexPage";
 import { createBrowserRouter } from "react-router-dom";
+import { UserPage } from "./UserPage";
 
 export const routes = createBrowserRouter([
   {
@@ -8,6 +9,6 @@ export const routes = createBrowserRouter([
   },
   {
     path: "/users/:userId",
-    element: <div>user</div>,
+    element: <UserPage />,
   },
 ]);

@@ -15,5 +15,9 @@
     "typescriptreact"
   ],
   "eslint.workingDirectories": ["./app", "./web"],
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }
