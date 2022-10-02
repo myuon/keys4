@@ -7,6 +7,10 @@ import { useMemo } from "react";
 import { usePr } from "./api/pr";
 import { Pr } from "../../models/pr";
 
+const median = (arr: number[]) => {
+  return arr.sort((a, b) => a - b)[Math.floor(arr.length / 2)];
+};
+
 function App() {
   const { data: repositories } = useRepository();
   const thisWeek = useLast7Days(dayjs());
@@ -59,6 +63,17 @@ function App() {
         .reduce((acc, cur) => acc + cur, 0),
     [thisWeek, prByDate]
   );
+  const leadTimeForChanges = useMemo(() => {
+    const leadTimes = pr
+      ?.filter((pr): pr is Pr & { mergedAt: number } => Boolean(pr.mergedAt))
+      .map((pr) => pr.mergedAt - pr.createdAt);
+
+    if (!leadTimes) {
+      return undefined;
+    }
+
+    return median(leadTimes);
+  }, []);
 
   return (
     <div
@@ -86,11 +101,12 @@ function App() {
 
         <div
           css={css`
-            display: grid;
+            display: flex;
             justify-content: center;
+            gap: 32px;
           `}
         >
-          {deploysThisWeek / 7 > 2.0 && (
+          {deploysThisWeek / 5 >= 2.5 && (
             <div
               css={css`
                 width: 100px;
@@ -116,10 +132,45 @@ function App() {
                       font-weight: 500;
                     `}
                   >
-                    {(deploysThisWeek / 7).toFixed(1)}
+                    {(deploysThisWeek / 5).toFixed(1)}
                   </span>
                 </span>
                 <span>Elite</span>
+              </div>
+            </div>
+          )}
+          {leadTimeForChanges && (
+            <div
+              css={css`
+                width: 100px;
+                height: 100px;
+                // background-color: #22c55e;
+                background-color: ${leadTimeForChanges < 1.0
+                  ? "#6366f1"
+                  : "#22c55e"};
+                border-radius: 50%;
+                color: white;
+                display: grid;
+                place-items: center;
+              `}
+            >
+              <div
+                css={css`
+                  display: grid;
+                  gap: 8px;
+                `}
+              >
+                <span>
+                  <span
+                    css={css`
+                      font-size: 24px;
+                      font-weight: 500;
+                    `}
+                  >
+                    {(leadTimeForChanges / 60 / 60).toFixed(1)}
+                  </span>
+                </span>
+                <span>{leadTimeForChanges < 1.0 ? "Elite" : "Good"}</span>
               </div>
             </div>
           )}
