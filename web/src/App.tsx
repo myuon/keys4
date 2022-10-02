@@ -2,17 +2,13 @@ import "./App.css";
 import dayjs from "dayjs";
 import { css } from "@emotion/react";
 import { useRepository } from "./api/repository";
-import { useDeployment } from "./api/deployment";
 import { Calendar, useLast7Days } from "./components/Calendar";
 import { useMemo } from "react";
-import { Deployment } from "../../models/deployment";
 import { usePr } from "./api/pr";
 import { Pr } from "../../models/pr";
 
 function App() {
   const { data: repositories } = useRepository();
-  const { data: deployments } = useDeployment();
-
   const thisWeek = useLast7Days(dayjs());
 
   const span = {
@@ -21,34 +17,6 @@ function App() {
   };
   const { data: pr } = usePr(span);
 
-  const deploysByDate = useMemo(
-    () =>
-      deployments?.reduce((acc, deployment) => {
-        const date = dayjs.unix(deployment.createdAt).format("YYYY-MM-DD");
-        if (!acc[date]) {
-          acc[date] = [];
-        }
-        acc[date].push(deployment);
-        return acc;
-      }, {} as Record<string, Deployment[]>),
-    [deployments]
-  );
-  const deployEvents = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(deploysByDate ?? {}).map(([date, deploys]) => [
-          date,
-          <div
-            css={css`
-              font-weight: bold;
-            `}
-          >
-            🚀 {deploys.length}
-          </div>,
-        ])
-      ),
-    [deploysByDate]
-  );
   const prByAuthor = useMemo(
     () =>
       pr?.reduce((acc, pr) => {
@@ -63,16 +31,33 @@ function App() {
       }, {} as Record<string, Pr[]>),
     [pr]
   );
+  const prByDate = useMemo(
+    () =>
+      pr?.reduce((acc, pr) => {
+        if (!pr.mergedAt) {
+          return acc;
+        }
+
+        const date = dayjs.unix(pr.mergedAt).format("YYYY-MM-DD");
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+
+        acc[date].push(pr);
+        return acc;
+      }, {} as Record<string, Pr[]>),
+    [pr]
+  );
 
   const deploysThisWeek = useMemo(
     () =>
       thisWeek
         .map((day) => {
           const date = day.format("YYYY-MM-DD");
-          return deploysByDate?.[date]?.length ?? 0;
+          return prByDate?.[date]?.length ?? 0;
         })
         .reduce((acc, cur) => acc + cur, 0),
-    [deploysByDate, thisWeek]
+    [thisWeek, prByDate]
   );
 
   return (
@@ -105,21 +90,37 @@ function App() {
             justify-content: center;
           `}
         >
-          {deploysThisWeek > 0 && (
+          {deploysThisWeek / 7 > 2.0 && (
             <div
               css={css`
                 width: 100px;
                 height: 100px;
-                background-color: #22c55e;
-                display: grid;
-                place-items: center;
+                // background-color: #22c55e;
+                background-color: #6366f1;
                 border-radius: 50%;
                 color: white;
-                font-size: 20px;
-                font-weight: 500;
+                display: grid;
+                place-items: center;
               `}
             >
-              High
+              <div
+                css={css`
+                  display: grid;
+                  gap: 8px;
+                `}
+              >
+                <span>
+                  <span
+                    css={css`
+                      font-size: 24px;
+                      font-weight: 500;
+                    `}
+                  >
+                    {(deploysThisWeek / 7).toFixed(1)}
+                  </span>
+                </span>
+                <span>Elite</span>
+              </div>
             </div>
           )}
         </div>
@@ -135,13 +136,13 @@ function App() {
             <div key={i}>
               <h3>{day.format("ddd")}</h3>
               <p>{day.format("M/D")}</p>
-              {deploysByDate?.[day.format("YYYY-MM-DD")] && (
+              {prByDate?.[day.format("YYYY-MM-DD")] && (
                 <p
                   css={css`
                     font-weight: bold;
                   `}
                 >
-                  🚀 {deploysByDate?.[day.format("YYYY-MM-DD")].length}
+                  🚀 {prByDate?.[day.format("YYYY-MM-DD")].length}
                 </p>
               )}
             </div>
@@ -208,7 +209,7 @@ function App() {
                               <a href={pr.url}>{pr.title}</a>
                             </div>
                             <div>
-                              {pr.mergedAt && (
+                              {pr.mergedAt ? (
                                 <span>
                                   ✅{" "}
                                   {dayjs
@@ -217,6 +218,15 @@ function App() {
                                       dayjs.unix(pr.createdAt),
                                       "hour"
                                     )}{" "}
+                                  hrs
+                                </span>
+                              ) : (
+                                <span>
+                                  ⏳{" "}
+                                  {dayjs().diff(
+                                    dayjs.unix(pr.createdAt),
+                                    "hour"
+                                  )}{" "}
                                   hrs
                                 </span>
                               )}
@@ -231,15 +241,7 @@ function App() {
         </div>
       </section>
       <div>
-        <Calendar events={deployEvents} />
-      </div>
-      <div>
-        {deployments?.map((d, i) => (
-          <div key={i}>
-            <a href={d.url}>{d.hash}</a>
-            <div>{dayjs.unix(d.createdAt).format("YYYY-MM-DD HH:mm:ss")}</div>
-          </div>
-        ))}
+        <Calendar />
       </div>
     </div>
   );
