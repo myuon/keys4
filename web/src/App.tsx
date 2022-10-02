@@ -84,13 +84,6 @@ function App() {
       `}
     >
       <h1>Four Keys</h1>
-      <div>
-        {repositories?.map((r, i) => (
-          <h2 key={i}>
-            {r.owner}/{r.name}
-          </h2>
-        ))}
-      </div>
       <section
         css={css`
           display: grid;
