@@ -16,6 +16,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { CircleDisplay } from "../components/CircleDisplay";
 
 ChartJS.register(
   CategoryScale,
@@ -99,17 +100,24 @@ export const IndexPage = () => {
       className="App"
       css={css`
         display: grid;
-        gap: 16px;
+        gap: 48px;
+
+        section {
+          display: grid;
+          gap: 32px;
+        }
       `}
     >
-      <h1>Four Keys</h1>
-      <section
+      <h1
         css={css`
-          display: grid;
-          gap: 16px;
+          text-align: center;
         `}
       >
-        <h2>Deployments</h2>
+        Four Keys
+      </h1>
+
+      <section>
+        <h2>Summary</h2>
 
         <div
           css={css`
@@ -122,32 +130,29 @@ export const IndexPage = () => {
             <div
               css={css`
                 display: grid;
-                place-items: center;
-                width: 100px;
-                height: 100px;
-                color: white;
-                /* background-color: #22c55e; */
-                background-color: #6366f1;
-                border-radius: 50%;
+                justify-content: center;
               `}
             >
-              <div
+              <p>Deployment Frequency</p>
+              <small
                 css={css`
-                  display: grid;
-                  gap: 8px;
+                  margin-bottom: 8px;
                 `}
               >
-                <span>
-                  <span
-                    css={css`
-                      font-size: 24px;
-                      font-weight: 500;
-                    `}
-                  >
-                    {(deploysThisWeek / 5).toFixed(1)}
-                  </span>
-                </span>
-                <span>Elite</span>
+                times/day, avg
+              </small>
+              <div
+                css={css`
+                  margin: 0 auto;
+                `}
+              >
+                <CircleDisplay
+                  backgroundColor={
+                    deploysThisWeek / 5 > 1.0 ? "#6366f1" : "#22c55e"
+                  }
+                  value={(deploysThisWeek / 5).toFixed(1)}
+                  label={deploysThisWeek / 5 > 1.0 ? "Elite" : "Good"}
+                />
               </div>
             </div>
           )}
@@ -155,48 +160,53 @@ export const IndexPage = () => {
             <div
               css={css`
                 display: grid;
-                place-items: center;
-                width: 100px;
-                height: 100px;
-                color: white;
-                /* background-color: #22c55e; */
-                background-color: ${leadTimeForChanges < 1.0
-                  ? "#6366f1"
-                  : "#22c55e"};
-                border-radius: 50%;
+                justify-content: center;
               `}
             >
-              <div
+              <p>Lead Time for Changes</p>
+              <small
                 css={css`
-                  display: grid;
-                  gap: 8px;
+                  margin-bottom: 8px;
                 `}
               >
-                <span>
-                  <span
-                    css={css`
-                      font-size: 24px;
-                      font-weight: 500;
-                    `}
-                  >
-                    {(leadTimeForChanges / 60 / 60).toFixed(1)}
-                  </span>
-                </span>
-                <span>{leadTimeForChanges < 1.0 ? "Elite" : "Good"}</span>
+                hours/pr, median
+              </small>
+              <div
+                css={css`
+                  margin: 0 auto;
+                `}
+              >
+                <CircleDisplay
+                  backgroundColor={
+                    leadTimeForChanges < 1.0 ? "#6366f1" : "#22c55e"
+                  }
+                  value={(leadTimeForChanges / 60 / 60).toFixed(1)}
+                  label={leadTimeForChanges < 1.0 ? "Elite" : "Good"}
+                />
               </div>
             </div>
           )}
         </div>
+      </section>
+
+      <section>
+        <h2>Weekly Calendar</h2>
 
         <div
           css={css`
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(7, 50px);
+            gap: 24px;
+            justify-content: center;
           `}
         >
           {thisWeek.map((day, i) => (
-            <div key={i}>
+            <div
+              key={i}
+              css={css`
+                text-align: center;
+              `}
+            >
               <h3>{day.format("ddd")}</h3>
               <p>{day.format("M/D")}</p>
               {prByDate?.[day.format("YYYY-MM-DD")] && (
@@ -211,10 +221,18 @@ export const IndexPage = () => {
             </div>
           ))}
         </div>
+      </section>
 
-        <div>
-          <h3>PR This Week</h3>
+      <section>
+        <h2>PR This Week</h2>
 
+        <div
+          css={css`
+            display: grid;
+            place-items: center;
+            width: 650px;
+          `}
+        >
           {prByAuthor && (
             <Bar
               options={{
@@ -222,18 +240,10 @@ export const IndexPage = () => {
                 elements: {
                   bar: {
                     borderWidth: 2,
+                    borderRadius: 3,
                   },
                 },
                 responsive: true,
-                plugins: {
-                  legend: {
-                    position: "right" as const,
-                  },
-                  title: {
-                    display: true,
-                    text: "Chart.js Horizontal Bar Chart",
-                  },
-                },
               }}
               data={{
                 labels: Object.keys(prByAuthor),
@@ -250,37 +260,37 @@ export const IndexPage = () => {
               }}
             />
           )}
+        </div>
 
-          <div
-            css={css`
-              display: grid;
-              gap: 16px;
-            `}
-          >
-            {prByAuthor &&
-              Object.entries(prByAuthor).map(
-                ([author, prs]) =>
-                  prs.length > 0 && (
-                    <div
-                      key={author}
+        <div
+          css={css`
+            display: grid;
+            gap: 4px;
+          `}
+        >
+          {prByAuthor &&
+            Object.entries(prByAuthor).map(
+              ([author, prs]) =>
+                prs.length > 0 && (
+                  <div
+                    key={author}
+                    css={css`
+                      display: grid;
+                      gap: 8px;
+                      text-align: left;
+                    `}
+                  >
+                    <Link
+                      to={`/users/${author}`}
                       css={css`
-                        display: grid;
-                        gap: 8px;
-                        text-align: left;
+                        font-weight: bold;
                       `}
                     >
-                      <Link
-                        to={`/users/${author}`}
-                        css={css`
-                          font-weight: bold;
-                        `}
-                      >
-                        {author} ({prs.length})
-                      </Link>
-                    </div>
-                  )
-              )}
-          </div>
+                      {author} ({prs.length})
+                    </Link>
+                  </div>
+                )
+            )}
         </div>
       </section>
     </div>
