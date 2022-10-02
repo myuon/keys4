@@ -27,4 +27,7 @@ const deserialize = (object: Record<string, any>): Pr => {
 export const db_pr = {
   serialize,
   deserialize,
+  query: {
+    selectByCreatedAtSpan: `SELECT * FROM prs WHERE created_at >= ? AND created_at < ? ORDER BY created_at;`,
+  },
 };

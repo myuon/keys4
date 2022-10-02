@@ -12,7 +12,13 @@ import { Pr } from "../../models/pr";
 function App() {
   const { data: repositories } = useRepository();
   const { data: deployments } = useDeployment();
-  const { data: pr } = usePr();
+
+  const thisWeek = useLast7Days(dayjs());
+
+  const { data: pr } = usePr({
+    start: thisWeek[0].unix(),
+    end: thisWeek[thisWeek.length - 1].add(1, "day").unix(),
+  });
 
   const deploysByDate = useMemo(
     () =>
@@ -57,7 +63,6 @@ function App() {
     [pr]
   );
 
-  const thisWeek = useLast7Days(dayjs());
   const deploysThisWeek = useMemo(
     () =>
       thisWeek
@@ -229,7 +234,9 @@ function App() {
           </div>
         </div>
       </section>
-      <Calendar events={deployEvents} />
+      <div>
+        <Calendar events={deployEvents} />
+      </div>
       <div>
         {deployments?.map((d, i) => (
           <div key={i}>
