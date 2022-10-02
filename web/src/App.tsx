@@ -42,14 +42,16 @@ function App() {
       ),
     [deploysByDate]
   );
-  const prByDate = useMemo(
+  const prByAuthor = useMemo(
     () =>
       pr?.reduce((acc, pr) => {
-        const date = dayjs.unix(pr.createdAt).format("YYYY-MM-DD");
-        if (!acc[date]) {
-          acc[date] = [];
+        if (pr.author) {
+          if (!acc[pr.author]) {
+            acc[pr.author] = [];
+          }
+
+          acc[pr.author].push(pr);
         }
-        acc[date].push(pr);
         return acc;
       }, {} as Record<string, Pr[]>),
     [pr]
@@ -170,30 +172,61 @@ function App() {
         <div>
           <h3>PR This Week</h3>
 
-          {thisWeek
-            .map((day) => prByDate?.[day.format("YYYY-MM-DD")])
-            .flatMap((prs) =>
-              prs?.map((pr) => (
-                <div
-                  key={pr.id}
-                  css={css`
-                    display: flex;
-                    gap: 16px;
-                    text-align: left;
-                  `}
-                >
-                  <span
-                    css={css`
-                      font-weight: bold;
-                    `}
-                  >
-                    {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
-                  </span>
-                  <span>@{pr.author}</span>
-                  <a href={pr.url}>{pr.title}</a>
-                </div>
-              ))
-            )}
+          <div
+            css={css`
+              display: grid;
+              gap: 16px;
+            `}
+          >
+            {prByAuthor &&
+              Object.entries(prByAuthor).map(
+                ([author, prs]) =>
+                  prs.length > 0 && (
+                    <div
+                      key={author}
+                      css={css`
+                        display: grid;
+                        gap: 8px;
+                        text-align: left;
+                      `}
+                    >
+                      <span
+                        css={css`
+                          font-weight: bold;
+                        `}
+                      >
+                        {author} ({prs.length})
+                      </span>
+                      <div
+                        css={css`
+                          display: grid;
+                          gap: 2px;
+                        `}
+                      >
+                        {prs.map((pr) => (
+                          <div
+                            key={pr.id}
+                            css={css`
+                              display: flex;
+                              gap: 16px;
+                              text-align: left;
+                            `}
+                          >
+                            <span
+                              css={css`
+                                font-weight: bold;
+                              `}
+                            >
+                              {dayjs.unix(pr.createdAt).format("YYYY-MM-DD")}
+                            </span>
+                            <a href={pr.url}>{pr.title}</a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+              )}
+          </div>
         </div>
       </section>
       <Calendar events={deployEvents} />
