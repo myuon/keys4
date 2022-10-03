@@ -7,6 +7,7 @@
   "scripts": {
     "app:codegen": "yarn workspace app codegen",
     "app:start": "yarn workspace app start",
+    "app:start:prod": "yarn workspace app start:prod",
     "web:build": "yarn workspace web build"
   },
   "devDependencies": {
