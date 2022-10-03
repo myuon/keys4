@@ -13,8 +13,6 @@ const prCommitRelationRepository = newPrCommitRelationRepository(db);
 const repositoryRepository = newRepositoryRepository(db);
 
 const syncRepository = async () => {
-  repositoryRepository.createTableIfNotExists();
-
   const { config } = await import("./keys4.config");
 
   config.projects.forEach((project) => {
@@ -31,10 +29,6 @@ const syncRepository = async () => {
 const syncPr = async (config: {
   projects: { owner: string; name: string }[];
 }) => {
-  prRepository.createTableIfNotExists();
-  prCommitRelationRepository.createTableIfNotExists();
-  commitRepository.createTableIfNotExists();
-
   config.projects.forEach(async (project) => {
     const { prs, commits, relations } = await requestPr(
       project.owner,

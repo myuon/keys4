@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "codegen": "graphql-codegen --config codegen.yml",
-    "start": "tsx -r ./config.ts main.ts"
+    "start": "tsx -r ./config.ts main.ts",
+    "start:prod": "tsx main.ts",
+    "init:db": "tsx init.ts"
   },
   "dependencies": {
     "@octokit/graphql": "^5.0.1",
