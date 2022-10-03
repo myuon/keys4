@@ -26,7 +26,7 @@ jobs:
       - name: Install
         run: yarn install
       - name: Sync
-        run: yarn app:start:prod
+        run: yarn app:codegen && yarn app:start:prod
       - name: Check diff
         id: diff
         run: |
