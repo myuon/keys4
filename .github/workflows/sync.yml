@@ -28,7 +28,7 @@ jobs:
       - name: Place config file
         run: cp keys4.config.example.ts ./app/keys4.config.ts
       - name: Prepare db
-        run: wget https://storage.googleapis.com/keys4/db.example.sqlite3 -O ./app/db.sqlite3
+        run: wget https://storage.googleapis.com/keys4/myuon/db.sqlite3 -O ./app/db.sqlite3
       - name: Sync
         run: yarn app:codegen && yarn app:start:prod
         env:
