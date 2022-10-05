@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Install
         run: yarn install
+      - name: Place config file
+        run: cp keys4.config.example.ts ./app/keys4.config.ts
       - name: Sync
         run: yarn app:codegen && yarn app:start:prod
       - name: Check diff
