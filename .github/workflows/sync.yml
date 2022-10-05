@@ -27,6 +27,8 @@ jobs:
         run: yarn install
       - name: Place config file
         run: cp keys4.config.example.ts ./app/keys4.config.ts
+      - name: Prepare db
+        run: yarn workspace app init:db
       - name: Sync
         run: yarn app:codegen && yarn app:start:prod
       - name: Check diff
