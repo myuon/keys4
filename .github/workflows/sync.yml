@@ -31,6 +31,8 @@ jobs:
         run: yarn workspace app init:db
       - name: Sync
         run: yarn app:codegen && yarn app:start:prod
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Check diff
         id: diff
         run: |
