@@ -48,4 +48,4 @@ jobs:
           git switch gh-pages
           git commit -m 'chore: sync data'
           git push
-        if: steps.diff.outcome == 'failure'
+        # if: steps.diff.outcome == 'failure'
