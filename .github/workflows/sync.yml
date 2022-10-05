@@ -37,14 +37,3 @@ jobs:
         with:
           name: db
           path: ./app/db.sqlite3
-      - name: Commit & Push
-        run: |
-          set -x
-          git fetch
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          cp ./app/db.sqlite3 ./db.sqlite3
-          git add -f ./db.sqlite3
-          git switch gh-pages
-          git commit -m 'chore: sync data'
-          git push
