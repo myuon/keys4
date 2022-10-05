@@ -33,12 +33,12 @@ jobs:
         run: yarn app:codegen && yarn app:start:prod
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check diff
-        id: diff
-        run: |
-          git add -N .
-          git diff --name-only --exit-code ./app/db.sqlite3
-        continue-on-error: true
+      # - name: Check diff
+      #   id: diff
+      #   run: |
+      #     git add -N .
+      #     git diff --name-only --exit-code ./app/db.sqlite3
+      #   continue-on-error: true
       - name: Commit & Push
         run: |
           set -x
