@@ -1,11 +1,14 @@
 import initSqlJs from "sql.js";
 import useSWR from "swr";
 
+// const dbPath = `${import.meta.env.BASE_URL}db.sqlite3`
+const dbPath = "https://storage.googleapis.com/keys4/myuon/db.sqlite3";
+
 export const useDb = () => {
   const { data, error } = useSWR("/db.sqlite3", async (url) => {
     console.log("fetching db");
 
-    const resp = await fetch(`${import.meta.env.BASE_URL}db.sqlite3`);
+    const resp = await fetch(dbPath);
 
     console.log("fetched db");
 
