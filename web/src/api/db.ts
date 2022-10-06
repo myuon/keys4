@@ -1,8 +1,7 @@
 import initSqlJs from "sql.js";
 import useSWR from "swr";
 
-// const dbPath = `${import.meta.env.BASE_URL}db.sqlite3`
-const dbPath = "https://storage.googleapis.com/keys4/myuon/db.sqlite3";
+const dbPath = import.meta.env.VITE_DB_PATH;
 
 export const useDb = () => {
   const { data, error } = useSWR("/db.sqlite3", async (url) => {
