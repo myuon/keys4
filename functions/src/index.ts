@@ -10,16 +10,24 @@ const app = new Koa();
 
 app.use(cors());
 
-app.use(async (ctx) => {
-  const authorization = ctx.request.headers.authorization;
-  if (!authorization) {
-    ctx.status = 401;
-    return;
+app.use(async (ctx, next) => {
+  const token = ctx.request.header.authorization;
+  if (token) {
+    try {
+      const decodedToken = await auth.verifyIdToken(token);
+      ctx.state.auth = decodedToken;
+    } catch (error) {
+      console.error(error);
+      ctx.throw("Unauthorized", 401);
+    }
   }
-  const sub = (await auth.verifyIdToken(authorization)).sub;
 
+  await next();
+});
+
+app.use(async (ctx) => {
   if (ctx.request.path === "/sqlite") {
-    ctx.body = `Hello World!, ${sub}`;
+    ctx.body = `Hello World!, ${ctx.state.user?.sub}`;
   }
 });
 
