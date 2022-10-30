@@ -25,14 +25,10 @@ export const LoginPage = () => {
         `}
         onClick={async () => {
           const result = await signInWithPopup(auth, provider);
-          const credential = GithubAuthProvider.credentialFromResult(result);
-          if (credential?.accessToken) {
-            const token = credential.accessToken;
-            setToken(token);
-          }
-
           const user = result.user;
           setUser(user);
+
+          setToken(await result.user.getIdToken());
         }}
       >
         Login with Github
