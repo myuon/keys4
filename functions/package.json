@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "lint": "echo lint",
+    "prebuild": "rm -rf lib",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
@@ -14,12 +15,13 @@
   "engines": {
     "node": "16"
   },
-  "main": "lib/index.js",
+  "main": "lib/functions/src/index.js",
   "dependencies": {
     "@koa/cors": "^4.0.0",
     "firebase-admin": "^11.2.0",
     "firebase-functions": "^3.18.0",
-    "koa": "^2.13.4"
+    "koa": "^2.13.4",
+    "sqlite3": "^5.1.2"
   },
   "devDependencies": {
     "@types/koa": "^2.13.5",

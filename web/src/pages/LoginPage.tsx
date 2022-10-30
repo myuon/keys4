@@ -12,7 +12,7 @@ provider.setCustomParameters({
 
 export const LoginPage = () => {
   const [user, setUser] = useState<User>();
-  const [, setToken] = useLocalStorageState("token", "");
+  const [token, setToken] = useLocalStorageState("token", "");
 
   return (
     <div>
@@ -38,6 +38,22 @@ export const LoginPage = () => {
         <div>
           <h2>Logged in as {user.displayName}</h2>
           <p>UID: {user.uid}</p>
+
+          <button
+            onClick={async () => {
+              const resp = await fetch(
+                "https://asia-northeast1-keys4-ebdd8.cloudfunctions.net/api/init",
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              console.log(await resp.text());
+            }}
+          >
+            /init
+          </button>
         </div>
       ) : null}
     </div>
