@@ -4,7 +4,6 @@ import cors from "@koa/cors";
 import * as admin from "firebase-admin";
 import sqlite3 from "sqlite3";
 import { newCommitRepostiroy } from "../../app/src/infra/commit/commit";
-import * as fs from "fs";
 
 admin.initializeApp();
 const auth = admin.auth();
@@ -35,11 +34,7 @@ app.use(async (ctx) => {
   if (ctx.request.path === "/sqlite") {
     ctx.body = `Hello World!, ${ctx.state.user?.sub}`;
   } else if (ctx.request.path === "/init") {
-    fs.writeFile("./db.sqlite3", "", (err) => {
-      console.error(err);
-    });
-
-    const db = new sqlite3.Database("./db.sqlite3");
+    const db = new sqlite3.Database("/tmp/db.sqlite3");
     const commitRepository = newCommitRepostiroy(db);
     commitRepository.createTableIfNotExists();
     db.close();
@@ -47,7 +42,7 @@ app.use(async (ctx) => {
     storage
       .bucket("gs://keys4-ebdd8.appspot.com")
       .file("db.sqlite3")
-      .save("./db.sqlite3", (err) => {
+      .save("/tmp/db.sqlite3", (err) => {
         if (err) {
           console.error(err);
           ctx.throw("InternalServerError", 500);
