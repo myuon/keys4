@@ -11,7 +11,9 @@ provider.setCustomParameters({
 });
 
 export const LoginPage = () => {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | undefined>(
+    auth.currentUser ?? undefined
+  );
   const [token, setToken] = useLocalStorageState("token", "");
 
   return (
@@ -34,7 +36,7 @@ export const LoginPage = () => {
         Login with Github
       </button>
 
-      {user ? (
+      {user && token ? (
         <div>
           <h2>Logged in as {user.displayName}</h2>
           <p>UID: {user.uid}</p>
