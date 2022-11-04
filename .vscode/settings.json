@@ -22,5 +22,8 @@
   },
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "file:///Users/ioijoi/workspace/keys4/.github/workflows/deploy.yml"
+  },
+  "files.exclude": {
+    "**/node_modules": true
   }
 }

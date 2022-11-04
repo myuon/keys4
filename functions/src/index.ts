@@ -37,11 +37,17 @@ app.use(async (ctx, next) => {
 });
 
 app.use(async (ctx) => {
+  const createDbPath = () => {
+    return `db/${ctx.state.org}/db.sqlite3`;
+  };
+
   ctx.status = 200;
   functions.logger.log("state", ctx.state);
 
   if (ctx.request.path === "/sqlite") {
-    ctx.body = `Hello World!, ${ctx.state.user?.sub}`;
+    const content = await storage.bucket().file(createDbPath()).download();
+    ctx.body = content[0];
+    ctx.response.set("Content-Type", "application/octet-stream");
   } else if (ctx.request.path === "/init") {
     const dbFilePath = "/tmp/db.sqlite3";
     const db = new sqlite3.Database(dbFilePath);
@@ -49,10 +55,8 @@ app.use(async (ctx) => {
     commitRepository.createTableIfNotExists();
     db.close();
 
-    const org = ctx.state.org;
-
     await storage.bucket().upload(dbFilePath, {
-      destination: `db/${org}/db.sqlite3`,
+      destination: createDbPath(),
     });
     ctx.body = "OK";
   } else {

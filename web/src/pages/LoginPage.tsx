@@ -56,6 +56,21 @@ export const LoginPage = () => {
           >
             /init
           </button>
+          <button
+            onClick={async () => {
+              const resp = await fetch(
+                "https://asia-northeast1-keys4-ebdd8.cloudfunctions.net/api/sqlite",
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              console.log(await resp.text());
+            }}
+          >
+            /sqlite
+          </button>
         </div>
       ) : null}
     </div>
